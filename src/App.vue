@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    App Root Component
+    <!-- 路由占位符  通过路由匹配到的组件，都会在router-view中进行展示 -->
+    <router-view></router-view>
   </div>
 </template>
 
