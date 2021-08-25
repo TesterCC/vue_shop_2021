@@ -11,7 +11,34 @@
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <!-- 侧边栏菜单区 -->
+        <el-menu
+          background-color="#2e333e"
+          text-color="#fff"
+          active-text-color="#ffd04b">
+          <!-- 一级菜单区 -->
+          <el-submenu :index="item.id + '' " v-for="item in menulist" :key="item.id">
+            <!-- 一级菜单模板区 -->
+            <template slot="title">
+              <!-- 图标 -->
+              <i class="el-icon-location"></i>
+              <!-- 文本 -->
+              <span>{{ item.authName }}</span>
+            </template>
+            <!-- 二级菜单 -->
+             <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id" >
+              <template slot="title">
+              <!-- 图标 -->
+              <i class="el-icon-location"></i>
+              <!-- 文本 -->
+              <span>{{ subItem.authName }}</span>
+            </template>
+             </el-menu-item>
+          </el-submenu>
+
+        </el-menu>
+      </el-aside>
       <!-- 右侧内容主体 -->
       <el-main>Main</el-main>
     </el-container>
@@ -19,13 +46,32 @@
 </template>
 
 <script>
+
 export default {
+  data () {
+    return {
+      // 左侧菜单数据
+      menulist: []
+    }
+  },
+  // 定义生命周期函数
+  created () {
+    this.getMenuList()
+  },
   methods: {
     logout () {
       // 清空token
       window.sessionStorage.clear()
       // 跳转登录页
       this.$router.push('/login')
+    },
+    async getMenuList () {
+      // 解构赋值
+      const { data: res } = await this.$http.get('menus')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menulist = res.data
+      // console.log(res) // 获取到的菜单栏数据要立即挂载到自己的data中
+      console.log(this.menulist)
     }
   }
 }
@@ -54,10 +100,15 @@ export default {
 
 .el-aside {
   // background-color: #2e333e; //active
-  background-color: rgba(62,69,83,.9);
+  background-color: #2e333e;
 }
 
 .el-main {
-  background-color: #2e333e;
+  background-color: rgba(62,69,83,.9);
+}
+
+// 取消默认组件border-right效果
+.el-menu {
+  border-right: 0;
 }
 </style>
