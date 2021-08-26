@@ -11,18 +11,20 @@
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px' : '200px' ">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏菜单区 -->
         <el-menu
           background-color="#2e333e"
           text-color="#fff"
-          active-text-color="#ffd04b">
+          active-text-color="#24aeff"
+          unique-opened :collapse="isCollapse" :collapse-transition="false">
           <!-- 一级菜单区 -->
           <el-submenu :index="item.id + '' " v-for="item in menulist" :key="item.id">
             <!-- 一级菜单模板区 -->
             <template slot="title">
-              <!-- 图标 -->
-              <i class="el-icon-location"></i>
+              <!-- 图标 一级菜单图标动态绑定 -->
+              <i :class="iconsObj[item.id]"></i>
               <!-- 文本 -->
               <span>{{ item.authName }}</span>
             </template>
@@ -30,7 +32,7 @@
              <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id" >
               <template slot="title">
               <!-- 图标 -->
-              <i class="el-icon-location"></i>
+              <i class="el-icon-menu"></i>
               <!-- 文本 -->
               <span>{{ subItem.authName }}</span>
             </template>
@@ -51,7 +53,16 @@ export default {
   data () {
     return {
       // 左侧菜单数据
-      menulist: []
+      menulist: [],
+      iconsObj: {
+        125: 'iconfont icon-user',
+        103: 'iconfont icon-tijikongjian',
+        101: 'iconfont icon-shangpin',
+        102: 'iconfont icon-danju',
+        145: 'iconfont icon-baobiao'
+      },
+      // 侧边栏是否折叠
+      isCollapse: false
     }
   },
   // 定义生命周期函数
@@ -72,6 +83,10 @@ export default {
       this.menulist = res.data
       // console.log(res) // 获取到的菜单栏数据要立即挂载到自己的data中
       console.log(this.menulist)
+    },
+    // 点击按钮，切换左侧菜单的折叠与展开
+    toggleCollapse () {
+      this.isCollapse = !this.isCollapse
     }
   }
 }
@@ -109,6 +124,20 @@ export default {
 
 // 取消默认组件border-right效果
 .el-menu {
-  border-right: 0;
+  border-right: None;
+}
+
+.iconfont {
+  margin-right: 10px;
+}
+
+.toggle-button {
+  background-color: #4A5064;
+  font-size: 10px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
 }
 </style>
